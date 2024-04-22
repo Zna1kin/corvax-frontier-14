@@ -83,6 +83,9 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
+    [ValidatePrototypeId<EntityPrototype>]
+    private const string GameRuleId = "Pirates";
+
     [ValidatePrototypeId<AntagPrototype>]
     public const string PirateId = "Pirate";
 
