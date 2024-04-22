@@ -1,3 +1,41 @@
+# Corvax-Frontier start
+- type: antag
+  id: Pirate
+  name: roles-antag-pirate-name
+  antagonist: true
+  setPreference: true
+  objective: ""
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # test
+
+- type: antag
+  id: Firstmate
+  name: roles-antag-firstmate-agent-name
+  antagonist: true
+  setPreference: true
+  objective: ""
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 18000 # 5h
+  - !type:DepartmentTimeRequirement
+    department: Medical
+    time: 18000 # 5h
+
+- type: antag
+  id: PirateCaptain
+  name: roles-antag-pirate-captain-name
+  antagonist: true
+  setPreference: true
+  objective: ""
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 18000 # 5h
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 18000 # 5h
+# Corvax-Frontier end
+
 - type: startingGear
   id: PirateGear
   equipment:
