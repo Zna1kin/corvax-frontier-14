@@ -404,7 +404,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 }
 
                 var mob = Spawn(species.Prototype, _random.Pick(spawns));
-                SetupPirateEntity(mob, spawnDetails.Gear, profile, component);
+                SetupPirateEntity(mob, "", spawnDetails.Gear, profile, component);
                 var newMind = _mind.CreateMind(session.UserId);
                 _mind.SetUserId(newMind, session.UserId);
                 _roles.MindAddRole(newMind, new PiratesRoleComponent { PrototypeId = spawnDetails.Role });
