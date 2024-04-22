@@ -518,7 +518,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
         if (spawns.Count == 0)
         {
-            spawns.Add(Transform(.Coordinates);
+            spawns.Add(Transform(.Coordinates));
             Logger.WarningS("nukies", $"Fell back to default spawn for nukies!");
         }
 
