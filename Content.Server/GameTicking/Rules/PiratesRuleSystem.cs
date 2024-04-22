@@ -424,7 +424,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
         foreach (var (pirates, gameRule) in EntityQuery<PiratesRuleComponent, GameRuleComponent>())
         {
-            if (pirate.PirateMindPendingData.TryGetValue(uid, out var role) || pirates.RoundEndBehavior == RoundEndBehavior.Nothing)
+            if (pirate.PirateMindPendingData.TryGetValue(uid, out var role)
             {
                 role ??= pirates.PirateRoleProto;
                 _roles.MindAddRole(mindId, new PiratesRoleComponent { PrototypeId = role });
@@ -438,7 +438,6 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 return;
 
             pirates.PiratePlayers.Add(Name(uid), mindId);
-            _warDeclarator.RefreshAllUI(pirates, gameRule);
 
             if (GameTicker.RunLevel != GameRunLevel.InRound)
                 return;
@@ -548,11 +547,6 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
         if (!Resolve(uid, ref component))
             return;
 
-        if (!SpawnMap(uid, component))
-        {
-            Logger.InfoS("pirates", "Failed to load map for pirates");
-            return;
-        }
         // Basically copied verbatim from traitor code
         var PlayersPerPirate = component.PlayersPerPirate;
         var maxPirates = component.MaxPirates;
