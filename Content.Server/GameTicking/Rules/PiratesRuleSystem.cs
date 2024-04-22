@@ -336,11 +336,6 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
                 if (!_mind.TryGetMind(session, out var mind, out _))
                     continue;
-
-                var name = session.AttachedEntity == null
-                    ? string.Empty
-                    : Name(session.AttachedEntity.Value);
-                pirates.PiratePlayers[name] = mind;
             }
         }
     }
