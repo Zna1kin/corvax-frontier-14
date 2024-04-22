@@ -495,11 +495,14 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
     {
         var spawns = new List<EntityCoordinates>();
 
-        if (spawns.Count == 0)
-        {
-            spawns.Add(xform.Coordinates);
-            Logger.WarningS("nukies", $"Fell back to default spawn for nukies!");
-        }
+            foreach (var (_, meta, xform) in
+                     EntityQuery<SpawnPointComponent, MetaDataComponent, TransformComponent>(true))
+            {
+                if (meta.EntityPrototype?.ID != SpawnPointId || xform.ParentUid != pirates.PirateShip)
+                    continue;
+
+                spawns.Add(xform.Coordinates);
+            }
 
         // TODO: This should spawn the nukies in regardless and transfer if possible; rest should go to shot roles.
         for(var i = 0; i < spawnCount; i++)
