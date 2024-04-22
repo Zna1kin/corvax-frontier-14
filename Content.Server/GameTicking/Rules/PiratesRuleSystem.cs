@@ -275,8 +275,8 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             // Dear lord what is happening HERE.
             var everyone = new List<ICommonSession>(ev.PlayerPool);
             var prefList = new List<ICommonSession>();
-            var medPrefList = new List<ICommonSession>();
-            var cmdrPrefList = new List<ICommonSession>();
+            var frstPrefList = new List<ICommonSession>();
+            var cptnPrefList = new List<ICommonSession>();
             var pirates = new List<ICommonSession>();
 
             // The LINQ expression ReSharper keeps suggesting is completely unintelligible so I'm disabling it
@@ -295,11 +295,11 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 }
                 if (profile.AntagPreferences.Contains(pirates.FirstmateRoleProto.Id))
 	            {
-	                medPrefList.Add(player);
+	                frstPrefList.Add(player);
 	            }
                 if (profile.AntagPreferences.Contains(pirates.CaptaibRoleProto.Id))
                 {
-                    cmdrPrefList.Add(player);
+                    cptnPrefList.Add(player);
                 }
             }
 
@@ -312,9 +312,9 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 // Only one commander, so we do it at the start
                 if (i == 0)
                 {
-                    if (cmdrPrefList.Count == 0)
+                    if (cptnPrefList.Count == 0)
                     {
-                        if (medPrefList.Count == 0)
+                        if (frstPrefList.Count == 0)
                         {
                             if (prefList.Count == 0)
                             {
@@ -335,7 +335,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                         }
                         else
                         {
-                            pirate = _random.PickAndTake(medPrefList);
+                            pirate = _random.PickAndTake(frstPrefList);
                             everyone.Remove(pirate);
                             prefList.Remove(pirate);
                             Logger.InfoS("preset", "Insufficient preferred pirate commanders, picking an agent");
@@ -343,16 +343,16 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                     }
                     else
                     {
-                        pirate = _random.PickAndTake(cmdrPrefList);
+                        pirate = _random.PickAndTake(cptnPrefList);
                         everyone.Remove(pirate);
                         prefList.Remove(pirate);
-                        medPrefList.Remove(pirate);
+                        frstPrefList.Remove(pirate);
                         Logger.InfoS("preset", "Selected a preferred pirate commander.");
                     }
                 }
                 else if (i == 1)
                 {
-                    if (medPrefList.Count == 0)
+                    if (frstPrefList.Count == 0)
                     {
                         if (prefList.Count == 0)
                         {
@@ -373,7 +373,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                     }
                     else
                     {
-                        pirate = _random.PickAndTake(medPrefList);
+                        pirate = _random.PickAndTake(frstPrefList);
                         everyone.Remove(pirate);
                         prefList.Remove(pirate);
                         Logger.InfoS("preset", "Insufficient preferred pirate commanders, picking an agent");
