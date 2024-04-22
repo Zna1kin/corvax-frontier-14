@@ -205,131 +205,71 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             if (!GameTicker.IsGameRuleAdded(uid, gameRule))
                 continue;
 
-            // Basically copied verbatim from traitor code
             var PlayersPerPirate = pirates.PlayersPerPirate;
             var maxPirates = pirates.MaxPirates;
 
-            // Dear lord what is happening HERE.
             var everyone = new List<ICommonSession>(ev.PlayerPool);
             var prefList = new List<ICommonSession>();
             var frstPrefList = new List<ICommonSession>();
             var cptnPrefList = new List<ICommonSession>();
             var capers = new List<ICommonSession>();
 
-            // The LINQ expression ReSharper keeps suggesting is completely unintelligible so I'm disabling it
-            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
             foreach (var player in everyone)
             {
                 if (!ev.Profiles.ContainsKey(player.UserId))
-                {
                     continue;
-                }
 
                 var profile = ev.Profiles[player.UserId];
                 if (profile.AntagPreferences.Contains(pirates.PirateRoleProto.Id))
-                {
                     prefList.Add(player);
-                }
                 if (profile.AntagPreferences.Contains(pirates.FirstmateRoleProto.Id))
-	            {
-	                frstPrefList.Add(player);
-	            }
+                    frstPrefList.Add(player);
                 if (profile.AntagPreferences.Contains(pirates.CaptaibRoleProto.Id))
-                {
                     cptnPrefList.Add(player);
-                }
             }
 
             var numPirates = MathHelper.Clamp(_playerManager.PlayerCount / PlayersPerPirate, 1, maxPirates);
 
             for (var i = 0; i < numPirates; i++)
             {
-                // TODO: Please fix this if you touch it.
                 ICommonSession pirate;
-                // Only one commander, so we do it at the start
                 if (i == 0)
                 {
-                    if (cptnPrefList.Count == 0)
-                    {
-                        if (frstPrefList.Count == 0)
-                        {
-                            if (prefList.Count == 0)
-                            {
-                                if (everyone.Count == 0)
-                                {
-                                    Logger.InfoS("preset", "Insufficient ready players to fill up with pirates, stopping the selection");
-                                    break;
-                                }
-                                pirate = _random.PickAndTake(everyone);
-                                Logger.InfoS("preset", "Insufficient preferred pirate commanders, agents or nukies, picking at random.");
-                            }
-                            else
-                            {
-                                pirate = _random.PickAndTake(prefList);
-                                everyone.Remove(pirate);
-                                Logger.InfoS("preset", "Insufficient preferred pirate commander or agents, picking at random from regular op list.");
-                            }
-                        }
-                        else
-                        {
-                            pirate = _random.PickAndTake(frstPrefList);
-                            everyone.Remove(pirate);
-                            prefList.Remove(pirate);
-                            Logger.InfoS("preset", "Insufficient preferred pirate commanders, picking an agent");
-                        }
-                    }
-                    else
-                    {
-                        pirate = _random.PickAndTake(cptnPrefList);
-                        everyone.Remove(pirate);
-                        prefList.Remove(pirate);
-                        frstPrefList.Remove(pirate);
-                        Logger.InfoS("preset", "Selected a preferred pirate commander.");
-                    }
+                    pirate = cptnPrefList.Count > 0 ? _random.PickAndTake(cptnPrefList) :
+                             frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
+                             prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
                 }
                 else if (i == 1)
                 {
-                    if (frstPrefList.Count == 0)
-                    {
-                        if (prefList.Count == 0)
-                        {
-                            if (everyone.Count == 0)
-                            {
-                                Logger.InfoS("preset", "Insufficient ready players to fill up with pirates, stopping the selection");
-                                break;
-                            }
-                            pirate = _random.PickAndTake(everyone);
-                            Logger.InfoS("preset", "Insufficient preferred pirate commanders, agents or nukies, picking at random.");
-                        }
-                        else
-                        {
-                            pirate = _random.PickAndTake(prefList);
-                            everyone.Remove(pirate);
-                            Logger.InfoS("preset", "Insufficient preferred pirate commander or agents, picking at random from regular op list.");
-                        }
-                    }
-                    else
-                    {
-                        pirate = _random.PickAndTake(frstPrefList);
-                        everyone.Remove(pirate);
-                        prefList.Remove(pirate);
-                        Logger.InfoS("preset", "Insufficient preferred pirate commanders, picking an agent");
-                    }
-
+                    pirate = frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
+                             prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
                 }
                 else
                 {
-                    pirate = _random.PickAndTake(prefList);
-                    everyone.Remove(pirate);
-                    Logger.InfoS("preset", "Selected a preferred pirate commander.");
+                    pirate = prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
                 }
 
-                capers.Add(pirate);
+                if (pirate != null)
+                {
+                    capers.Add(pirate);
+                    everyone.Remove(pirate);
+                    prefList.Remove(pirate);
+                    frstPrefList.Remove(pirate);
+                    cptnPrefList.Remove(pirate);
+                }
+                else
+                {
+                    Logger.InfoS("preset", "Insufficient ready players to fill up with pirates, stopping the selection");
+                    break;
+                }
             }
 
             SpawnPirates(numPirates, capers, false, pirates);
 
-            foreach (var session in pirates)
+            foreach (var session in capers)
             {
                 ev.PlayerPool.Remove(session);
                 GameTicker.PlayerJoinGame(session);
