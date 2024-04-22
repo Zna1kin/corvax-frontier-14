@@ -305,7 +305,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 continue;
             }
 
-            SetupPirateEntity(uid, pirateSpawner.PirateStartingGear, profile, pirates);
+            SetupPirateEntity(uid, "", pirateSpawner.PirateStartingGear, profile, pirates);
 
             pirates.PirateMindPendingData.Add(uid, pirateSpawner.PirateRolePrototype);
         }
