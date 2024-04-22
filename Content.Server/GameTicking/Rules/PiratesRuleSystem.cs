@@ -424,7 +424,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
         foreach (var (pirates, gameRule) in EntityQuery<PiratesRuleComponent, GameRuleComponent>())
         {
-            if (pirate.PirateMindPendingData.TryGetValue(uid, out var role)
+            if (pirate.PirateMindPendingData.TryGetValue(uid, out var role))
             {
                 role ??= pirates.PirateRoleProto;
                 _roles.MindAddRole(mindId, new PiratesRoleComponent { PrototypeId = role });
