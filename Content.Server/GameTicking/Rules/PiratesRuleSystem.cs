@@ -208,35 +208,12 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             var mostValuableThefts = new List<(double, EntityUid)>();
 
             double finalValue = 0.0;
-            if (pirates.PirateShip.IsValid())
-            {
-                finalValue = _pricingSystem.AppraiseGrid(pirates.PirateShip, uid =>
-                {
-                    foreach (var mindId in pirates.Pirates)
-                    {
-                        if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity == uid)
-                            return false; // Don't appraise the pirates twice, we count them in separately.
-                    }
-                    return true;
-                }, (uid, price) =>
-                {
-                    if (!pirates.InitialItems.Contains(uid))
-                    {
-                        mostValuableThefts.Add((price, uid));
-                        mostValuableThefts.Sort((i1, i2) => i2.Item1.CompareTo(i1.Item1));
-                        if (mostValuableThefts.Count > 5)
-                            mostValuableThefts.RemoveAt(mostValuableThefts.Count - 1);
-                    }
-                });
-            }
 
             foreach (var mindId in pirates.Pirates)
             {
                 if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity.IsValid())
                     finalValue += _pricingSystem.GetPrice(mind.CurrentEntity);
             }
-
-            var score = finalValue - pirates.InitialShipValue;
 
             ev.AddLine(Loc.GetString("pirates-final-score", ("score", $"{score:F2}")));
             ev.AddLine(Loc.GetString("pirates-final-score-2", ("finalPrice", $"{finalValue:F2}")));
