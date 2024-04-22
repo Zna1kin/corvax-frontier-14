@@ -84,7 +84,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     [ValidatePrototypeId<AntagPrototype>]
-    public const string PiratesId = "Pirates";
+    public const string PiratesId = "Pirate";
 
     public override void Initialize()
     {
