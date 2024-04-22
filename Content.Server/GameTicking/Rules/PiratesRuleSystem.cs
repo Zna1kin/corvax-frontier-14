@@ -81,7 +81,6 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly WarDeclaratorSystem _warDeclarator = default!;
 
     [ValidatePrototypeId<AntagPrototype>]
     public const string PiratesId = "Pirates";
