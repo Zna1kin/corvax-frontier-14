@@ -92,7 +92,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
         SubscribeLocalEvent<RoundStartAttemptEvent>(OnStartAttempt);
         SubscribeLocalEvent<RulePlayerSpawningEvent>(OnPlayersSpawning);
-        SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextEvent);
+///        SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextEvent);
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnRunLevelChanged);
 
         SubscribeLocalEvent<PirateComponent, GhostRoleSpawnerUsedEvent>(OnPlayersGhostSpawning);
@@ -194,50 +194,6 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
         {
             NotifyPirate(actor.PlayerSession, pirates, component);
             filter.AddPlayer(actor.PlayerSession);
-        }
-    }
-
-    private void OnRoundEndTextEvent(RoundEndTextAppendEvent ev)
-    {
-        var query = EntityQueryEnumerator<PiratesRuleComponent, GameRuleComponent>();
-        while (query.MoveNext(out var uid, out var pirates, out var gameRule))
-        {
-            if (pirates == null)
-                continue;
-
-            var mostValuableThefts = new List<(double, EntityUid)>();
-
-            double finalValue = 0.0;
-
-            foreach (var mindId in pirates.Pirates)
-            {
-                if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity.IsValid())
-                    finalValue += _pricingSystem.GetPrice(mind.CurrentEntity);
-            }
-
-            ev.AddLine(Loc.GetString("pirates-final-score", ("score", $"{score:F2}")));
-            ev.AddLine(Loc.GetString("pirates-final-score-2", ("finalPrice", $"{finalValue:F2}")));
-
-            ev.AddLine("");
-            ev.AddLine(Loc.GetString("pirates-most-valuable"));
-
-            foreach (var (price, obj) in mostValuableThefts)
-            {
-                ev.AddLine(Loc.GetString("pirates-stolen-item-entry", ("entity", obj), ("credits", $"{price:F2}")));
-            }
-
-            if (mostValuableThefts.Count == 0)
-                ev.AddLine(Loc.GetString("pirates-stole-nothing"));
-
-            ev.AddLine("");
-            ev.AddLine(Loc.GetString("pirates-list-start"));
-            foreach (var pirate in pirates.Pirates)
-            {
-                if (TryComp(pirate, out MindComponent? mind) && mind != null && mind.Session != null)
-                {
-                    ev.AddLine($"- {mind.CharacterName} ({mind.Session.Name})");
-                }
-            }
         }
     }
 
