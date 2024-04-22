@@ -51,7 +51,7 @@ public sealed partial class PiratesRuleComponent : Component
     public ProtoId<StartingGearPrototype> PirateCaptainStartGearProto = "PirateCaptainGear";
 
     [DataField]
-    public ProtoId<StartingGearPrototype> FirstmateStartGearProto = "SyndicateOperativeMedicFull";
+    public ProtoId<StartingGearPrototype> FirstmateStartGearProto = "PirateFirstmateGear";
 
     [DataField]
     public ProtoId<StartingGearPrototype> PirateStartGearProto = "PirateGear";
