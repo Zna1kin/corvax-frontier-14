@@ -262,7 +262,9 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 }
                 else
                 {
-                    Logger.InfoS("preset", "Insufficient ready players to fill up with pirates, stopping the selection");
+                    Logger.InfoS("preset", everyone.Count == 0
+                        ? "Insufficient ready players to fill up with pirates, stopping the selection"
+                        : "Insufficient preferred pirate commanders, agents or nukies, picking at random.");
                     break;
                 }
             }
@@ -279,6 +281,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             }
         }
     }
+
 
     private void OnPlayersGhostSpawning(EntityUid uid, PirateComponent component, GhostRoleSpawnerUsedEvent args)
     {
