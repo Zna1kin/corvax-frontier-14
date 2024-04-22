@@ -98,7 +98,7 @@ public sealed partial class AdminVerbSystem
                 if (!_minds.TryGetMind(args.Target, out var mindId, out var mind))
                     return;
 
-                _piratesRule.MakePirate(mindId, mind);
+                _piratesRule.MakeLonePirate(mindId, mind);
             },
             Impact = LogImpact.High,
             Message = Loc.GetString("admin-verb-make-pirate"),
