@@ -202,60 +202,63 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
         var query = EntityQueryEnumerator<PiratesRuleComponent, GameRuleComponent>();
         while (query.MoveNext(out var uid, out var pirates, out var gameRule))
         {
-            {
-                List<(double, EntityUid)> mostValuableThefts = new();
+            if (pirates == null)
+                continue;
 
-                var comp1 = pirates;
-                var finalValue = _pricingSystem.AppraiseGrid(pirates.PirateShip, uid =>
+            var mostValuableThefts = new List<(double, EntityUid)>();
+
+            double finalValue = 0.0;
+            if (pirates.PirateShip.IsValid())
+            {
+                finalValue = _pricingSystem.AppraiseGrid(pirates.PirateShip, uid =>
                 {
-                    foreach (var mindId in comp1.Pirates)
+                    foreach (var mindId in pirates.Pirates)
                     {
                         if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity == uid)
                             return false; // Don't appraise the pirates twice, we count them in separately.
                     }
-
                     return true;
                 }, (uid, price) =>
                 {
-                    if (comp1.InitialItems.Contains(uid))
-                        return;
-
-                    mostValuableThefts.Add((price, uid));
-                    mostValuableThefts.Sort((i1, i2) => i2.Item1.CompareTo(i1.Item1));
-                    if (mostValuableThefts.Count > 5)
-                        mostValuableThefts.Pop();
+                    if (!pirates.InitialItems.Contains(uid))
+                    {
+                        mostValuableThefts.Add((price, uid));
+                        mostValuableThefts.Sort((i1, i2) => i2.Item1.CompareTo(i1.Item1));
+                        if (mostValuableThefts.Count > 5)
+                            mostValuableThefts.RemoveAt(mostValuableThefts.Count - 1);
+                    }
                 });
-
-                foreach (var mindId in pirates.Pirates)
-                {
-                    if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity is not null)
-                        finalValue += _pricingSystem.GetPrice(mind.CurrentEntity.Value);
-                }
-
-                var score = finalValue - pirates.InitialShipValue;
-
-                ev.AddLine(Loc.GetString("pirates-final-score", ("score", $"{score:F2}")));
-                ev.AddLine(Loc.GetString("pirates-final-score-2", ("finalPrice", $"{finalValue:F2}")));
-
-                ev.AddLine("");
-                ev.AddLine(Loc.GetString("pirates-most-valuable"));
-
-                foreach (var (price, obj) in mostValuableThefts)
-                {
-                    ev.AddLine(Loc.GetString("pirates-stolen-item-entry", ("entity", obj), ("credits", $"{price:F2}")));
-                }
-
-                if (mostValuableThefts.Count == 0)
-                    ev.AddLine(Loc.GetString("pirates-stole-nothing"));
             }
+
+            foreach (var mindId in pirates.Pirates)
+            {
+                if (TryComp(mindId, out MindComponent? mind) && mind.CurrentEntity.IsValid())
+                    finalValue += _pricingSystem.GetPrice(mind.CurrentEntity);
+            }
+
+            var score = finalValue - pirates.InitialShipValue;
+
+            ev.AddLine(Loc.GetString("pirates-final-score", ("score", $"{score:F2}")));
+            ev.AddLine(Loc.GetString("pirates-final-score-2", ("finalPrice", $"{finalValue:F2}")));
+
+            ev.AddLine("");
+            ev.AddLine(Loc.GetString("pirates-most-valuable"));
+
+            foreach (var (price, obj) in mostValuableThefts)
+            {
+                ev.AddLine(Loc.GetString("pirates-stolen-item-entry", ("entity", obj), ("credits", $"{price:F2}")));
+            }
+
+            if (mostValuableThefts.Count == 0)
+                ev.AddLine(Loc.GetString("pirates-stole-nothing"));
 
             ev.AddLine("");
             ev.AddLine(Loc.GetString("pirates-list-start"));
             foreach (var pirate in pirates.Pirates)
             {
-                if (TryComp(pirate, out MindComponent? mind))
+                if (TryComp(pirate, out MindComponent? mind) && mind != null && mind.Session != null)
                 {
-                    ev.AddLine($"- {mind.CharacterName} ({mind.Session?.Name})");
+                    ev.AddLine($"- {mind.CharacterName} ({mind.Session.Name})");
                 }
             }
         }
