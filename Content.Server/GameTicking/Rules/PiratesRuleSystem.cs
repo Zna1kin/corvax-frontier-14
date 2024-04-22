@@ -84,7 +84,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     [ValidatePrototypeId<AntagPrototype>]
-    public const string PiratesId = "Pirate";
+    public const string PirateId = "Pirate";
 
     public override void Initialize()
     {
@@ -420,8 +420,8 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
                 var spawnPoint = Spawn(component.GhostSpawnPointProto, _random.Pick(spawns));
                 var ghostRole = EnsureComp<GhostRoleComponent>(spawnPoint);
                 EnsureComp<GhostRoleMobSpawnerComponent>(spawnPoint);
-                ghostRole.RoleName = Loc.GetString(PiratesAntag.Name);
-                ghostRole.RoleDescription = Loc.GetString(PiratesAntag.Objective);
+                ghostRole.RoleName = Loc.GetString(PirateAntag.Name);
+                ghostRole.RoleDescription = Loc.GetString(PirateAntag.Objective);
 
                 var pirateSpawner = EnsureComp<PirateSpawnerComponent>(spawnPoint);
                 pirateSpawner.PirateRolePrototype = spawnDetails.Role;
@@ -462,7 +462,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             return;
 
         //ok hardcoded value bad but so is everything else here
-        _roles.MindAddRole(mindId, new PiratesRoleComponent { PrototypeId = PiratesId }, mind);
+        _roles.MindAddRole(mindId, new PiratesRoleComponent { PrototypeId = PirateId }, mind);
         if (mind.CurrentEntity != null)
         {
             foreach (var (pirates, _) in EntityQuery<PiratesRuleComponent, GameRuleComponent>())
