@@ -205,16 +205,16 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
             if (!GameTicker.IsGameRuleAdded(uid, gameRule))
                 continue;
 
-            // Basically copied verbatim from traitor code
-            var PlayersPerPirate = pirates.PlayersPerPirate;
-            var maxPirates = pirates.MaxPirates;
-
             // Dear lord what is happening HERE.
             var everyone = new List<ICommonSession>(ev.PlayerPool);
             var prefList = new List<ICommonSession>();
             var frstPrefList = new List<ICommonSession>();
             var cptnPrefList = new List<ICommonSession>();
             var pirates = new List<ICommonSession>();
+
+            // Basically copied verbatim from traitor code
+            var PlayersPerPirate = pirates.PlayersPerPirate;
+            var maxPirates = pirates.MaxPirates;
 
             // The LINQ expression ReSharper keeps suggesting is completely unintelligible so I'm disabling it
             // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
