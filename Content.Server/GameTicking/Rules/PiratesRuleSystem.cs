@@ -232,25 +232,25 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
             for (var i = 0; i < numPirates; i++)
             {
-                ICommonSession pirate;
-                if (i == 0)
-                {
-                    pirate = cptnPrefList.Count > 0 ? _random.PickAndTake(cptnPrefList) :
-                             frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
-                             prefList.Count > 0 ? _random.PickAndTake(prefList) :
-                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
-                }
-                else if (i == 1)
-                {
-                    pirate = frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
-                             prefList.Count > 0 ? _random.PickAndTake(prefList) :
-                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
-                }
-                else
-                {
-                    pirate = prefList.Count > 0 ? _random.PickAndTake(prefList) :
-                             everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
-                }
+            ICommonSession? pirate;
+            if (i == 0)
+            {
+                pirate = cptnPrefList.Count > 0 ? _random.PickAndTake(cptnPrefList) :
+                         frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
+                         prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                         everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
+            }
+            else if (i == 1)
+            {
+                pirate = frstPrefList.Count > 0 ? _random.PickAndTake(frstPrefList) :
+                         prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                         everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
+            }
+            else
+            {
+                pirate = prefList.Count > 0 ? _random.PickAndTake(prefList) :
+                         everyone.Count > 0 ? _random.PickAndTake(everyone) : null;
+            }
 
                 if (pirate != null)
                 {
