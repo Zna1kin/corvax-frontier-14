@@ -318,7 +318,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
 
         foreach (var (pirates, gameRule) in EntityQuery<PiratesRuleComponent, GameRuleComponent>())
         {
-            if (pirate.PirateMindPendingData.TryGetValue(uid, out var role))
+            if (pirates.PirateMindPendingData.TryGetValue(uid, out var role))
             {
                 role ??= pirates.PirateRoleProto;
                 _roles.MindAddRole(mindId, new PiratesRoleComponent { PrototypeId = role });
@@ -340,7 +340,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
         }
     }
 
-    private (string Name, string Role, string Gear) GetPirateSpawnDetails(int spawnNumber, PiratesRuleComponent component )
+    private (string Role, string Gear) GetPirateSpawnDetails(int spawnNumber, PiratesRuleComponent component )
     {
         string role;
         string gear;
