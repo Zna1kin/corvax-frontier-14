@@ -393,7 +393,7 @@ public sealed class PiratesRuleSystem : GameRuleSystem<PiratesRuleComponent>
         for(var i = 0; i < spawnCount; i++)
         {
             var spawnDetails = GetPirateSpawnDetails(i, component);
-            var PiratesAntag = _prototypeManager.Index<AntagPrototype>(spawnDetails.Role);
+            var PirateAntag = _prototypeManager.Index<AntagPrototype>(spawnDetails.Role);
 
             if (sessions.TryGetValue(i, out var session))
             {
